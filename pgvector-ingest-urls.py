@@ -22,10 +22,9 @@ USER = "user=postgres"
 PASSWORD = "password=password"
 CONNECTION_STRING = "postgresql+psycopg://postgres:password@localhost:5432/vectordb"
 CHUNK_SIZE = 10
-
+conn = psycopg.connect("%s %s %s %s %s" % (HOST, PORT, NAME, USER, PASSWORD))
 
 def check_duplicate(uri):
-    conn = psycopg.connect("%s %s %s %s %s" % (HOST, PORT, NAME, USER, PASSWORD))
     with conn.cursor() as cursor:
         try:
             cursor.execute(
