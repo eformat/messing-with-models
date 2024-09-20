@@ -3,3 +3,4 @@ rhoai-doc*
 local_cache/
 venv/
 *~
+*mail*
