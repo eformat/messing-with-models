@@ -15,14 +15,15 @@ import psycopg
 import os
 
 COLLECTION_NAME = "documents_test"
-HOST = "host=localhost"
-PORT = "port=5432"
-NAME = "dbname=vectordb"
-USER = "user=postgres"
-PASSWORD = "password=password"
-CONNECTION_STRING = "postgresql+psycopg://postgres:password@localhost:5432/vectordb"
-CHUNK_SIZE = 10
-conn = psycopg.connect("%s %s %s %s %s" % (HOST, PORT, NAME, USER, PASSWORD))
+DB_HOST = os.getenv("DB_HOST", "host=localhost")
+DB_PORT = os.getenv("DB_PORT", "port=5432")
+DB_NAME = os.getenv("DB_NAME", "dbname=vectordb")
+DB_USER = os.getenv("DB_USER", "user=postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "password=password")
+CONNECTION_STRING = os.getenv("CONNECTION_STRING", "postgresql+psycopg://postgres:password@localhost:5432/vectordb")
+URL_CHUNK_SIZE = 10
+URL_FILE = os.getenv("URL_FILE", "https://developers.redhat.com/author/mike-hepburn")
+conn = psycopg.connect("%s %s %s %s %s" % (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD))
 
 def check_duplicate(uri):
     with conn.cursor() as cursor:
@@ -39,16 +40,14 @@ def check_duplicate(uri):
         for row in rows:
             return True
 
-
-text_file = open("/home/mike/tmp/developers.redhat.com-2024-09-20-07-46-58.uri", "r")
-# text_file = open("/tmp/ten-urls", "r")
+text_file = open(URL_FILE, "r")
 websites = text_file.read().splitlines()
-websites_tuple = tuple(it.batched(websites, CHUNK_SIZE))
+websites_tuple = tuple(it.batched(websites, URL_CHUNK_SIZE))
 pbar = tqdm(total=len(websites))
 
 for x in websites_tuple:
     print(x)
-    pbar.update(CHUNK_SIZE)
+    pbar.update(URL_CHUNK_SIZE)
 
     websites_list = list()
 
