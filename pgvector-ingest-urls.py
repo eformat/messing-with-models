@@ -22,7 +22,7 @@ DB_USER = os.getenv("DB_USER", "user=postgres")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "password=password")
 CONNECTION_STRING = os.getenv("CONNECTION_STRING", "postgresql+psycopg://postgres:password@localhost:5432/vectordb")
 URL_CHUNK_SIZE = 10
-URL_FILE = os.getenv("URL_FILE", "https://developers.redhat.com/author/mike-hepburn")
+URL_FILE = os.getenv("URL_FILE")
 conn = psycopg.connect("%s %s %s %s %s" % (DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD))
 
 def check_duplicate(uri):
