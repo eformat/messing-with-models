@@ -59,13 +59,15 @@ for x in websites_tuple:
 
     if len(websites_list) == 0:
         continue
-    # print(f">> processing {websites_list}")
+    #print(f">> processing {websites_list}")
 
     website_loader = WebBaseLoader(websites_list)
     docs = website_loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=40)
     all_splits = text_splitter.split_documents(docs)
+    if len(all_splits) == 0:
+        continue
     all_splits[0]
 
     # Cleanup documents as PostgreSQL won't accept the NUL character, '\x00', in TEXT fields.
