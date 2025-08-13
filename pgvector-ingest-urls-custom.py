@@ -64,7 +64,22 @@ class CustomWebBaseLoader(WebBaseLoader):
 
         self._check_parser(parser)
 
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:39.0)'}
+        headers = {
+            'accept': '*/*',
+            'accept-language': 'en-US,en;q=0.9',
+            'cache-control': 'no-cache',
+            'origin': 'https://developers.redhat.com',
+            'pragma': 'no-cache',
+            'referer': 'https://developers.redhat.com/',
+            'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Linux"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+        }
+
         html_doc = self.session.get(url, headers=headers, **self.requests_kwargs)
         if self.raise_for_status:
             html_doc.raise_for_status()
