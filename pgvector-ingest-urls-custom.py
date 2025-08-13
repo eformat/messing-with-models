@@ -9,6 +9,9 @@ from langchain_community.vectorstores import PGVector
 from lxml.html.clean import clean_html
 from pathlib import Path
 from tqdm import tqdm
+from typing import Union
+from typing import Any
+from typing import Optional
 import itertools as it
 import requests
 import psycopg
@@ -75,17 +78,19 @@ for x in websites_tuple:
     websites_list = list()
 
     for y in x:
-        if check_duplicate(y):
-            print(f">> skipping {y} already exists ...")
-        else:
-            websites_list.append(y)
+    #     if check_duplicate(y):
+    #         print(f">> skipping {y} already exists ...")
+    #     else:
+        websites_list.append(y)
 
-    if len(websites_list) == 0:
-        continue
-    #print(f">> processing {websites_list}")
+    # if len(websites_list) == 0:
+    #     continue
+    print(f">> processing {websites_list}")
 
     website_loader = CustomWebBaseLoader(websites_list)
     docs = website_loader.load()
+
+    # print(docs)
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=40)
     all_splits = text_splitter.split_documents(docs)
@@ -97,14 +102,17 @@ for x in websites_tuple:
     for doc in all_splits:
         doc.page_content = doc.page_content.replace("\x00", "")
 
+        print(doc.page_content)
+        print(doc.metadata)
+
     # Create the index and ingest the documents
     embeddings = HuggingFaceEmbeddings(show_progress=True)
 
-    db = PGVector.from_documents(
-        documents=all_splits,
-        embedding=embeddings,
-        collection_name=COLLECTION_NAME,
-        connection_string=CONNECTION_STRING,
-        use_jsonb=True,
-        # pre_delete_collection=True # This deletes existing collection and its data, use carefully!
-    )
+    # db = PGVector.from_documents(
+    #     documents=all_splits,
+    #     embedding=embeddings,
+    #     collection_name=COLLECTION_NAME,
+    #     connection_string=CONNECTION_STRING,
+    #     use_jsonb=True,
+    #     # pre_delete_collection=True # This deletes existing collection and its data, use carefully!
+    # )
