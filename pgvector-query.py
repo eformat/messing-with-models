@@ -21,7 +21,7 @@ db = PGVector(
     embedding_function=embeddings,
     use_jsonb=True)
 
-query="How do you create a Data Science Project?"
+query="What is Model Context Protocol (MCP)?"
 
 #results = db.similarity_search(query, k=4, return_metadata=True)
 #for result in results:
