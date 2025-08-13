@@ -9,6 +9,9 @@ from langchain_community.vectorstores import PGVector
 from lxml.html.clean import clean_html
 from pathlib import Path
 from tqdm import tqdm
+from typing import Union
+from typing import Any
+from typing import Optional
 import itertools as it
 import requests
 import psycopg
