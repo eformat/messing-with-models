@@ -9,9 +9,6 @@ from langchain_community.vectorstores import PGVector
 from lxml.html.clean import clean_html
 from pathlib import Path
 from tqdm import tqdm
-from typing import Union
-from typing import Any
-from typing import Optional
 import itertools as it
 import requests
 import psycopg
@@ -48,43 +45,10 @@ websites = text_file.read().splitlines()
 websites_tuple = tuple(it.batched(websites, URL_CHUNK_SIZE))
 pbar = tqdm(total=len(websites))
 
-class CustomWebBaseLoader(WebBaseLoader):
-    def _scrape(
-        self,
-        url: str,
-        parser: Union[str, None] = None,
-        bs_kwargs: Optional[dict] = None,
-        ) -> Any:
-        from bs4 import BeautifulSoup
-        if parser is None:
-            if url.endswith(".xml"):
-                parser = "xml"
-            else:
-                parser = self.default_parser
-
-        self._check_parser(parser)
-
-        headers = {
-            'accept': '*/*',
-            'accept-language': 'en-US,en;q=0.9',
-            'cache-control': 'no-cache',
-            'origin': 'https://developers.redhat.com',
-            'pragma': 'no-cache',
-            'referer': 'https://developers.redhat.com/',
-            'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Linux"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
-        }
-
-        html_doc = self.session.get(url, headers=headers, **self.requests_kwargs)
-        if self.raise_for_status:
-            html_doc.raise_for_status()
-        html_doc.encoding = 'utf-8'
-        return BeautifulSoup(html_doc.text, parser, **(bs_kwargs or {}))
+headers = {
+    'Accept': '*/*',
+    'Accept-Language': 'en-US,en;q=0.9',
+}
 
 for x in websites_tuple:
     print(x)
@@ -102,7 +66,7 @@ for x in websites_tuple:
         continue
     #print(f">> processing {websites_list}")
 
-    website_loader = CustomWebBaseLoader(websites_list)
+    website_loader = WebBaseLoader(websites_list, header_template=headers)
     docs = website_loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=40)
